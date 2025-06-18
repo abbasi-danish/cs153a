@@ -22,6 +22,7 @@ export default function StretchTimerScreen() {
   const [isActive, setIsActive] = useState(false);
   const [selectedDuration, setSelectedDuration] = useState(30);
   const [stretchHistory, setStretchHistory] = useState<StretchEntry[]>([]);
+  const [actualDuration, setActualDuration] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -51,18 +52,26 @@ export default function StretchTimerScreen() {
     if (isActive && timeLeft > 0) {
       timerRef.current = setInterval(() => {
         setTimeLeft((time) => time - 1);
+        setActualDuration((prev) => prev + 1);
       }, 1000);
-    } else if (timeLeft === 0) {
-      Vibration.vibrate([0, 500, 200, 500]);
-      Alert.alert('Time\'s up!', 'Great job! Take a short break before the next stretch.');
-      setIsActive(false);
-      const newHistory = [...stretchHistory, {
-        id: Date.now().toString(),
-        duration: selectedDuration,
-        date: new Date().toISOString(),
-      }];
-      setStretchHistory(newHistory);
-      saveStretchHistory(newHistory);
+    } else if (timeLeft === 0 || !isActive) {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+      
+      if (actualDuration > 0) {
+        Vibration.vibrate([0, 500, 200, 500]);
+        Alert.alert('Stretch Complete!', 'Great job! Take a short break before the next stretch.');
+        
+        const newHistory = [...stretchHistory, {
+          id: Date.now().toString(),
+          duration: actualDuration,
+          date: new Date().toISOString(),
+        }];
+        setStretchHistory(newHistory);
+        saveStretchHistory(newHistory);
+        setActualDuration(0);
+      }
     }
     return () => {
       if (timerRef.current) {
@@ -74,6 +83,7 @@ export default function StretchTimerScreen() {
   const handleStart = () => {
     setIsActive(true);
     setTimeLeft(selectedDuration);
+    setActualDuration(0);
   };
 
   const handleStop = () => {
