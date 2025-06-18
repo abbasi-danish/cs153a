@@ -1,34 +1,64 @@
-import { Stack } from 'expo-router';
+import { Tabs } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Layout() {
+  const insets = useSafeAreaInsets();
+
   return (
-    <Stack>
-      <Stack.Screen
+    <Tabs
+      screenOptions={{
+        tabBarStyle: {
+          backgroundColor: '#ffffff',
+          borderTopWidth: 1,
+          borderTopColor: '#e0e0e0',
+          height: Platform.OS === 'ios' ? 60 + insets.bottom : 60,
+          paddingBottom: Platform.OS === 'ios' ? insets.bottom : 8,
+          paddingTop: 8,
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          elevation: 0,
+          shadowOpacity: 0,
+        },
+        tabBarItemStyle: {
+          paddingVertical: 4,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
+        },
+        tabBarActiveTintColor: '#6200ee',
+        tabBarInactiveTintColor: '#757575',
+        headerStyle: {
+          backgroundColor: '#6200ee',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}
+    >
+      <Tabs.Screen
         name="index"
         options={{
-          title: 'Workout Logger',
-          headerStyle: {
-            backgroundColor: '#6200ee',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
+          title: 'Workout',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="barbell-outline" size={size} color={color} />
+          ),
         }}
       />
-      <Stack.Screen
+      <Tabs.Screen
         name="stretch-timer"
         options={{
-          title: 'Stretch Timer',
-          headerStyle: {
-            backgroundColor: '#6200ee',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
+          title: 'Stretch',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="timer-outline" size={size} color={color} />
+          ),
         }}
       />
-    </Stack>
+    </Tabs>
   );
 }
