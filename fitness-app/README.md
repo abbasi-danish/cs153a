@@ -1,50 +1,109 @@
-# Welcome to your Expo app 👋
+# Fitness App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native mobile application for tracking workouts and managing stretching routines. Built with Expo and TypeScript.
 
-## Get started
+## Features
 
-1. Install dependencies
+### Workout Logger
+- Log your exercises with details including:
+  - Exercise name
+  - Number of sets
+  - Repetitions per set
+  - Weight used
+- View and manage your workout history
+- Edit or delete previous workout entries
+- Data persistence using AsyncStorage
 
-   ```bash
-   npm install
-   ```
+### Stretch Timer
+- Customizable stretch duration (30s, 1m, 2m, 5m)
+- Visual countdown timer
+- Vibration alerts when stretch is complete
+- Track stretch history
+- Clear stretch history functionality
 
-2. Start the app
+### Workout Templates
+- Pre-defined workout routines:
+  - Full Body Workout
+  - Upper Body Focus
+  - Lower Body Focus
+  - Core Focus
+- Quick-add templates to your workout log
+- Detailed exercise breakdowns with sets and reps
 
-   ```bash
-   npx expo start
-   ```
+## Tech Stack
 
-In the output, you'll find options to open the app in a
+- React Native
+- Expo
+- TypeScript
+- AsyncStorage for data persistence
+- React Navigation for routing
+- Ionicons for UI icons
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Getting Started
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### Prerequisites
 
-## Get a fresh project
+- Node.js (v14 or higher)
+- npm or yarn
+- Expo CLI
+- iOS Simulator (for Mac) or Android Emulator
 
-When you're ready, run:
+### Installation
 
+1. Clone the repository:
 ```bash
-npm run reset-project
+git clone [repository-url]
+cd fitness-app
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
 
-## Learn more
+3. Start the development server:
+```bash
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+4. Run on your preferred platform:
+- Press `i` for iOS simulator
+- Press `a` for Android emulator
+- Scan QR code with Expo Go app on your physical device
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Project Structure
 
-## Join the community
+```
+fitness-app/
+├── app/
+│   ├── components/
+│   │   ├── StretchTimer.tsx
+│   │   ├── WorkoutLogger.tsx
+│   │   └── WorkoutTemplates.tsx
+│   ├── _layout.tsx
+│   ├── index.tsx
+│   ├── stretch-timer.tsx
+│   └── templates.tsx
+├── assets/
+└── package.json
+```
 
-Join our community of developers creating universal apps.
+## Contributing
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Built with Expo
+- Icons provided by Ionicons
+- Navigation powered by React Navigation
