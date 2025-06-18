@@ -51,6 +51,15 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
+        name="templates"
+        options={{
+          title: 'Templates',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="list-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="stretch-timer"
         options={{
           title: 'Stretch',
