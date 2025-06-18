@@ -91,6 +91,31 @@ export default function StretchTimerScreen() {
     setTimeLeft(selectedDuration);
   };
 
+  const handleClearHistory = () => {
+    Alert.alert(
+      'Clear History',
+      'Are you sure you want to clear all stretch history? This cannot be undone.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
+          text: 'Clear',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await AsyncStorage.removeItem('stretchHistory');
+              setStretchHistory([]);
+            } catch (error) {
+              console.error('Error clearing stretch history:', error);
+            }
+          }
+        }
+      ]
+    );
+  };
+
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -126,17 +151,23 @@ export default function StretchTimerScreen() {
         </View>
 
         <View style={styles.buttonContainer}>
-          {!isActive ? (
-            <TouchableOpacity style={styles.startButton} onPress={handleStart}>
-              <Ionicons name="play" size={24} color="#fff" />
-              <Text style={styles.buttonText}>Start</Text>
+          <View style={styles.buttonRow}>
+            {!isActive ? (
+              <TouchableOpacity style={styles.startButton} onPress={handleStart}>
+                <Ionicons name="play" size={24} color="#fff" />
+                <Text style={styles.buttonText}>Start</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.stopButton} onPress={handleStop}>
+                <Ionicons name="stop" size={24} color="#fff" />
+                <Text style={styles.buttonText}>Stop</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity style={styles.clearButton} onPress={handleClearHistory}>
+              <Ionicons name="trash-outline" size={24} color="#fff" />
+              <Text style={styles.buttonText}>Clear History</Text>
             </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.stopButton} onPress={handleStop}>
-              <Ionicons name="stop" size={24} color="#fff" />
-              <Text style={styles.buttonText}>Stop</Text>
-            </TouchableOpacity>
-          )}
+          </View>
         </View>
 
         <View style={styles.historyContainer}>
@@ -208,6 +239,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 40,
   },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 10,
+  },
   startButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -226,6 +263,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#b00020',
     paddingHorizontal: 30,
+    paddingVertical: 15,
+    borderRadius: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  clearButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#dc3545',
+    paddingHorizontal: 20,
     paddingVertical: 15,
     borderRadius: 25,
     shadowColor: '#000',
