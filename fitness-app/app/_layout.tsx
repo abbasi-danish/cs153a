@@ -1,52 +1,63 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Platform } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 
-export default function Layout() {
-  const insets = useSafeAreaInsets();
-
+export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
+        tabBarActiveTintColor: '#667eea',
+        tabBarInactiveTintColor: '#8e8e93',
         tabBarStyle: {
-          backgroundColor: '#ffffff',
-          borderTopWidth: 1,
-          borderTopColor: '#e0e0e0',
-          height: Platform.OS === 'ios' ? 60 + insets.bottom : 60,
-          paddingBottom: Platform.OS === 'ios' ? insets.bottom : 8,
+          backgroundColor: '#fff',
+          borderTopWidth: 0,
+          elevation: 8,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
+          height: Platform.OS === 'ios' ? 88 : 68,
+          paddingBottom: Platform.OS === 'ios' ? 28 : 8,
           paddingTop: 8,
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          elevation: 0,
-          shadowOpacity: 0,
-        },
-        tabBarItemStyle: {
-          paddingVertical: 4,
         },
         tabBarLabelStyle: {
           fontSize: 12,
-          fontWeight: '500',
+          fontWeight: '600',
+          marginTop: 4,
         },
-        tabBarActiveTintColor: '#6200ee',
-        tabBarInactiveTintColor: '#757575',
-        headerStyle: {
-          backgroundColor: '#6200ee',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
+        headerShown: false,
+        tabBarBackground: () => (
+          <LinearGradient
+            colors={['rgba(255, 255, 255, 0.95)', 'rgba(255, 255, 255, 0.98)']}
+            style={{ flex: 1 }}
+          />
+        ),
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Workout',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="barbell-outline" size={size} color={color} />
+          title: 'Workout Logger',
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons 
+              name={focused ? 'fitness' : 'fitness-outline'} 
+              size={size} 
+              color={color} 
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="stretch-timer"
+        options={{
+          title: 'Stretch Timer',
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons 
+              name={focused ? 'timer' : 'timer-outline'} 
+              size={size} 
+              color={color} 
+            />
           ),
         }}
       />
@@ -54,17 +65,12 @@ export default function Layout() {
         name="templates"
         options={{
           title: 'Templates',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="list-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="stretch-timer"
-        options={{
-          title: 'Stretch',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="timer-outline" size={size} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons 
+              name={focused ? 'library' : 'library-outline'} 
+              size={size} 
+              color={color} 
+            />
           ),
         }}
       />
