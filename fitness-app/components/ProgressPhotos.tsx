@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
@@ -65,13 +65,17 @@ export default function ProgressPhotos() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: isDark ? '#18181b' : '#fff' }]}> 
+    <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#18181b' : '#fff' }]}> 
       <LinearGradient
         colors={isDark ? ['#232526', '#18181b'] : ['#667eea', '#764ba2']}
         style={styles.gradientBackground}
       >
         <View style={styles.content}>
-          <Text style={[styles.title, { color: isDark ? '#fff' : '#fff' }]}>Progress Photos</Text>
+          <View style={styles.header}>
+            <Text style={[styles.title, { color: isDark ? '#fff' : '#fff' }]}>Progress Photos</Text>
+            <Text style={[styles.subtitle, { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.8)' }]}>Track your fitness journey visually</Text>
+          </View>
+          
           <View style={styles.buttonRow}>
             <TouchableOpacity style={styles.addButton} onPress={() => addPhoto(true)}>
               <Ionicons name="camera" size={22} color="#fff" />
@@ -82,6 +86,7 @@ export default function ProgressPhotos() {
               <Text style={styles.addButtonText}>Pick from Gallery</Text>
             </TouchableOpacity>
           </View>
+          
           {loading ? (
             <Text style={{ color: isDark ? '#fff' : '#222', marginTop: 32 }}>Loading...</Text>
           ) : photos.length === 0 ? (
@@ -108,22 +113,88 @@ export default function ProgressPhotos() {
           )}
         </View>
       </LinearGradient>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  gradientBackground: { flex: 1 },
-  content: { flex: 1, padding: 24 },
-  title: { fontSize: 32, fontWeight: '900', marginBottom: 32, textAlign: 'center', letterSpacing: 0.5 },
-  buttonRow: { flexDirection: 'row', justifyContent: 'center', marginBottom: 24, gap: 16 },
-  addButton: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#667eea', borderRadius: 16, paddingVertical: 12, paddingHorizontal: 18, marginHorizontal: 4 },
-  addButtonText: { color: '#fff', fontSize: 16, fontWeight: '700', marginLeft: 8 },
-  gallery: { paddingBottom: 40 },
-  photoWrapper: { margin: 8, borderRadius: 16, overflow: 'hidden', position: 'relative' },
-  photo: { width: 150, height: 200, borderRadius: 16 },
-  deleteButton: { position: 'absolute', top: 6, right: 6, backgroundColor: 'rgba(0,0,0,0.1)', borderRadius: 14 },
-  emptyContainer: { alignItems: 'center', justifyContent: 'center', marginTop: 60 },
-  emptyText: { fontSize: 16, textAlign: 'center', marginTop: 12 },
+  container: { 
+    flex: 1 
+  },
+  gradientBackground: { 
+    flex: 1 
+  },
+  content: { 
+    flex: 1, 
+    padding: 24,
+    paddingTop: 16
+  },
+  header: {
+    marginBottom: 32,
+    alignItems: 'center',
+  },
+  title: { 
+    fontSize: 32, 
+    fontWeight: '900', 
+    marginBottom: 8, 
+    textAlign: 'center', 
+    letterSpacing: 0.5 
+  },
+  subtitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  buttonRow: { 
+    flexDirection: 'row', 
+    justifyContent: 'center', 
+    marginBottom: 24, 
+    gap: 16 
+  },
+  addButton: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    backgroundColor: 'rgba(255, 255, 255, 0.2)', 
+    borderRadius: 16, 
+    paddingVertical: 12, 
+    paddingHorizontal: 18, 
+    marginHorizontal: 4 
+  },
+  addButtonText: { 
+    color: '#fff', 
+    fontSize: 16, 
+    fontWeight: '700', 
+    marginLeft: 8 
+  },
+  gallery: { 
+    paddingBottom: 40 
+  },
+  photoWrapper: { 
+    margin: 8, 
+    borderRadius: 16, 
+    overflow: 'hidden', 
+    position: 'relative' 
+  },
+  photo: { 
+    width: 150, 
+    height: 200, 
+    borderRadius: 16 
+  },
+  deleteButton: { 
+    position: 'absolute', 
+    top: 6, 
+    right: 6, 
+    backgroundColor: 'rgba(0,0,0,0.1)', 
+    borderRadius: 14 
+  },
+  emptyContainer: { 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    marginTop: 60 
+  },
+  emptyText: { 
+    fontSize: 16, 
+    textAlign: 'center', 
+    marginTop: 12 
+  },
 }); 

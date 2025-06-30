@@ -77,12 +77,12 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="settings"
+          name="progress-photos"
           options={{
-            title: 'Settings',
+            title: 'Progress Photos',
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons 
-                name={focused ? 'settings' : 'settings-outline'} 
+                name={focused ? 'camera' : 'camera-outline'} 
                 size={size} 
                 color={color} 
               />
@@ -90,12 +90,12 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="progress-photos"
+          name="settings"
           options={{
-            title: 'Progress Photos',
+            title: 'Settings',
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons 
-                name={focused ? 'camera' : 'camera-outline'} 
+                name={focused ? 'settings' : 'settings-outline'} 
                 size={size} 
                 color={color} 
               />
