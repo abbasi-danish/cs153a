@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView,
   View,
@@ -7,11 +7,12 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Alert,
   KeyboardAvoidingView,
-  Platform,
-  Dimensions,
   TouchableWithoutFeedback,
   Keyboard,
+  Dimensions,
+  Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';

@@ -2,7 +2,7 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ThemeProvider } from './components/ThemeContext';
+import { ThemeProvider } from '../components/ThemeContext';
 
 export default function TabLayout() {
   return (
@@ -83,6 +83,19 @@ export default function TabLayout() {
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons 
                 name={focused ? 'settings' : 'settings-outline'} 
+                size={size} 
+                color={color} 
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="progress-photos"
+          options={{
+            title: 'Progress Photos',
+            tabBarIcon: ({ color, size, focused }) => (
+              <Ionicons 
+                name={focused ? 'camera' : 'camera-outline'} 
                 size={size} 
                 color={color} 
               />

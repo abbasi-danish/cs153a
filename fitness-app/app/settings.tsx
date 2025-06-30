@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Switch, StyleSheet, SafeAreaView } from 'react-native';
-import { useTheme } from './components/ThemeContext';
+import { useTheme } from '../components/ThemeContext';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function SettingsScreen() {
