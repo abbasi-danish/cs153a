@@ -12,6 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTheme } from './ThemeContext';
 
 interface Exercise {
   name: string;
@@ -94,6 +95,7 @@ const defaultTemplates: WorkoutTemplate[] = [
 ];
 
 export function WorkoutTemplates() {
+  const { isDark } = useTheme();
   const [templates, setTemplates] = useState<WorkoutTemplate[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
@@ -181,15 +183,15 @@ export function WorkoutTemplates() {
   const categories = ['All', ...Array.from(new Set(templates.map(t => t.category)))];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#18181b' : '#fff' }]}>
       <LinearGradient
-        colors={['#667eea', '#764ba2']}
+        colors={isDark ? ['#232526', '#18181b'] : ['#667eea', '#764ba2']}
         style={styles.gradientBackground}
       >
         <View style={styles.content}>
           <View style={styles.header}>
-            <Text style={styles.title}>Workout Templates</Text>
-            <Text style={styles.subtitle}>Choose your perfect workout</Text>
+            <Text style={[styles.title, { color: isDark ? '#fff' : '#fff' }]}>Workout Templates</Text>
+            <Text style={[styles.subtitle, { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.8)' }]}>Choose your perfect workout</Text>
           </View>
 
           <View style={styles.categoryContainer}>
@@ -206,13 +208,14 @@ export function WorkoutTemplates() {
                   <LinearGradient
                     colors={selectedCategory === item 
                       ? ['#FF6B6B', '#FF8E8E'] 
-                      : ['rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.1)']
+                      : isDark ? ['#232526', '#18181b'] : ['rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.1)']
                     }
                     style={styles.categoryGradient}
                   >
                     <Text style={[
                       styles.categoryText,
                       selectedCategory === item && styles.selectedCategoryText,
+                      { color: isDark ? '#fff' : '#fff' },
                     ]}>
                       {item}
                     </Text>
@@ -233,12 +236,12 @@ export function WorkoutTemplates() {
               return (
                 <View style={styles.templateCard}>
                   <LinearGradient
-                    colors={colors}
+                    colors={isDark ? ['#232526', '#18181b'] : colors}
                     style={styles.templateGradient}
                   >
                     <View style={styles.templateHeader}>
                       <View style={styles.templateInfo}>
-                        <Text style={styles.templateName}>{item.name}</Text>
+                        <Text style={[styles.templateName, { color: '#fff' }]}>{item.name}</Text>
                         <View style={styles.templateMeta}>
                           <View style={styles.metaItem}>
                             <Ionicons 
@@ -246,11 +249,11 @@ export function WorkoutTemplates() {
                               size={16} 
                               color="#fff" 
                             />
-                            <Text style={styles.metaText}>{item.category}</Text>
+                            <Text style={[styles.metaText, { color: isDark ? '#fff' : '#fff' }]}>{item.category}</Text>
                           </View>
                           <View style={styles.metaItem}>
                             <Ionicons name="time-outline" size={16} color="#fff" />
-                            <Text style={styles.metaText}>{item.estimatedDuration}m</Text>
+                            <Text style={[styles.metaText, { color: isDark ? '#fff' : '#fff' }]}>{item.estimatedDuration}m</Text>
                           </View>
                         </View>
                       </View>
@@ -273,17 +276,17 @@ export function WorkoutTemplates() {
                     </View>
                     
                     <View style={styles.exercisesContainer}>
-                      <Text style={styles.exercisesTitle}>Exercises:</Text>
+                      <Text style={[styles.exercisesTitle, { color: isDark ? '#fff' : '#fff' }]}>Exercises:</Text>
                       {item.exercises.slice(0, 3).map((exercise, index) => (
                         <View key={index} style={styles.exerciseItem}>
-                          <Text style={styles.exerciseName}>• {exercise.name}</Text>
-                          <Text style={styles.exerciseDetails}>
+                          <Text style={[styles.exerciseName, { color: isDark ? '#fff' : '#fff' }]}>• {exercise.name}</Text>
+                          <Text style={[styles.exerciseDetails, { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.8)' }]}>
                             {exercise.sets} sets × {exercise.reps} reps
                           </Text>
                         </View>
                       ))}
                       {item.exercises.length > 3 && (
-                        <Text style={styles.moreExercises}>
+                        <Text style={[styles.moreExercises, { color: isDark ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.7)' }] }>
                           +{item.exercises.length - 3} more exercises
                         </Text>
                       )}
@@ -294,9 +297,9 @@ export function WorkoutTemplates() {
             }}
             ListEmptyComponent={
               <View style={styles.emptyContainer}>
-                <Ionicons name="fitness-outline" size={64} color="rgba(255, 255, 255, 0.6)" />
-                <Text style={styles.emptyTitle}>No templates found</Text>
-                <Text style={styles.emptyText}>
+                <Ionicons name="fitness-outline" size={64} color={isDark ? 'rgba(255,255,255,0.6)' : 'rgba(255, 255, 255, 0.6)'} />
+                <Text style={[styles.emptyTitle, { color: isDark ? '#fff' : '#fff' }]}>No templates found</Text>
+                <Text style={[styles.emptyText, { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.8)' }] }>
                   No templates match the selected category
                 </Text>
               </View>

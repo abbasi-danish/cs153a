@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Circle } from 'react-native-svg';
+import { useTheme } from './ThemeContext';
 
 interface StretchEntry {
   id: string;
@@ -29,6 +30,7 @@ const RADIUS = (CIRCLE_SIZE - STROKE_WIDTH) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 export function StretchTimer() {
+  const { isDark } = useTheme();
   const [timeLeft, setTimeLeft] = useState(30);
   const [isActive, setIsActive] = useState(false);
   const [selectedDuration, setSelectedDuration] = useState(30);
@@ -184,15 +186,15 @@ export function StretchTimer() {
   });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#18181b' : '#fff' }]}>
       <LinearGradient
-        colors={['#667eea', '#764ba2']}
+        colors={isDark ? ['#232526', '#18181b'] : ['#667eea', '#764ba2']}
         style={styles.gradientBackground}
       >
         <View style={styles.content}>
           <View style={styles.header}>
-            <Text style={styles.title}>Stretch Timer</Text>
-            <Text style={styles.subtitle}>Stay flexible and healthy</Text>
+            <Text style={[styles.title, { color: isDark ? '#fff' : '#fff' }]}>Stretch Timer</Text>
+            <Text style={[styles.subtitle, { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.8)' }]}>Stay flexible and healthy</Text>
           </View>
           
           <View style={styles.timerContainer}>
@@ -202,7 +204,7 @@ export function StretchTimer() {
                 <Svg width={CIRCLE_SIZE} height={CIRCLE_SIZE} style={{ transform: [{ rotate: '-90deg' }] }}>
                   {/* Background track */}
                   <Circle
-                    stroke="#e6e6e6"
+                    stroke={isDark ? '#33343a' : '#e6e6e6'}
                     fill="none"
                     cx={CIRCLE_SIZE / 2}
                     cy={CIRCLE_SIZE / 2}
@@ -211,7 +213,7 @@ export function StretchTimer() {
                   />
                   {/* Progress arc */}
                   <AnimatedCircle
-                    stroke="#fff"
+                    stroke={isDark ? '#fff' : '#fff'}
                     fill="none"
                     cx={CIRCLE_SIZE / 2}
                     cy={CIRCLE_SIZE / 2}
@@ -225,8 +227,8 @@ export function StretchTimer() {
                 
                 {/* Timer text - positioned to avoid overlap */}
                 <View style={styles.timerTextContainer}>
-                  <Text style={styles.timerText}>{formatTime(timeLeft)}</Text>
-                  <Text style={styles.timerLabel}>
+                  <Text style={[styles.timerText, { color: isDark ? '#fff' : '#fff' }]}>{formatTime(timeLeft)}</Text>
+                  <Text style={[styles.timerLabel, { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.8)' }]}>
                     {isActive ? 'Stretching...' : 'Ready to start'}
                   </Text>
                 </View>

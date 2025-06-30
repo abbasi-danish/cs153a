@@ -16,6 +16,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTheme } from './ThemeContext';
 
 interface WorkoutEntry {
   id: string;
@@ -27,6 +28,7 @@ interface WorkoutEntry {
 const { width } = Dimensions.get('window');
 
 export function WorkoutLogger() {
+  const { isDark } = useTheme();
   const [exercise, setExercise] = useState('');
   const [sets, setSets] = useState('');
   const [reps, setReps] = useState('');
@@ -114,9 +116,9 @@ export function WorkoutLogger() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#18181b' : '#fff' }]}>
       <LinearGradient
-        colors={['#667eea', '#764ba2']}
+        colors={isDark ? ['#232526', '#18181b'] : ['#667eea', '#764ba2']}
         style={styles.gradientBackground}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -125,17 +127,17 @@ export function WorkoutLogger() {
             style={styles.inner}
           >
             <View style={styles.header}>
-              <Text style={styles.title}>Workout Logger</Text>
-              <Text style={styles.subtitle}>Track your fitness journey</Text>
+              <Text style={[styles.title, { color: isDark ? '#fff' : '#fff' }]}>Workout Logger</Text>
+              <Text style={[styles.subtitle, { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.8)' }]}>Track your fitness journey</Text>
             </View>
 
-            <View style={styles.inputContainer}>
+            <View style={[styles.inputContainer, { backgroundColor: isDark ? 'rgba(36,36,40,0.95)' : 'rgba(255,255,255,0.95)' }]}>
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Exercise</Text>
+                <Text style={[styles.label, { color: isDark ? '#eee' : '#333' }]}>Exercise</Text>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { backgroundColor: isDark ? '#232326' : '#f8f9fa', color: isDark ? '#fff' : '#333' }]}
                   placeholder="e.g. Bench Press"
-                  placeholderTextColor="#999"
+                  placeholderTextColor={isDark ? '#888' : '#999'}
                   value={exercise}
                   onChangeText={setExercise}
                 />
@@ -143,11 +145,11 @@ export function WorkoutLogger() {
 
               <View style={styles.row}>
                 <View style={[styles.inputGroup, styles.halfWidth]}>  
-                  <Text style={styles.label}>Sets</Text>
+                  <Text style={[styles.label, { color: isDark ? '#eee' : '#333' }]}>Sets</Text>
                   <TextInput
-                    style={styles.input}
+                    style={[styles.input, { backgroundColor: isDark ? '#232326' : '#f8f9fa', color: isDark ? '#fff' : '#333' }]}
                     placeholder="3"
-                    placeholderTextColor="#999"
+                    placeholderTextColor={isDark ? '#888' : '#999'}
                     value={sets}
                     onChangeText={setSets}
                     keyboardType="number-pad"
@@ -155,11 +157,11 @@ export function WorkoutLogger() {
                 </View>
 
                 <View style={[styles.inputGroup, styles.halfWidth]}>  
-                  <Text style={styles.label}>Reps</Text>
+                  <Text style={[styles.label, { color: isDark ? '#eee' : '#333' }]}>Reps</Text>
                   <TextInput
-                    style={styles.input}
+                    style={[styles.input, { backgroundColor: isDark ? '#232326' : '#f8f9fa', color: isDark ? '#fff' : '#333' }]}
                     placeholder="10"
-                    placeholderTextColor="#999"
+                    placeholderTextColor={isDark ? '#888' : '#999'}
                     value={reps}
                     onChangeText={setReps}
                     keyboardType="number-pad"
@@ -173,7 +175,7 @@ export function WorkoutLogger() {
                 activeOpacity={0.8}
               >
                 <LinearGradient
-                  colors={editId ? ['#FF6B6B', '#FF8E8E'] : ['#667eea', '#764ba2']}
+                  colors={editId ? ['#FF6B6B', '#FF8E8E'] : isDark ? ['#232526', '#18181b'] : ['#667eea', '#764ba2']}
                   style={styles.button}
                 >
                   <Ionicons
@@ -199,11 +201,11 @@ export function WorkoutLogger() {
                 return (
                   <View style={styles.card}>
                     <LinearGradient
-                      colors={colors}
+                      colors={isDark ? ['#232526', '#18181b'] : colors}
                       style={styles.cardGradient}
                     >
                       <View style={styles.cardHeader}>
-                        <Text style={styles.cardTitle}>{item.exercise}</Text>
+                        <Text style={[styles.cardTitle, { color: '#fff' }]}>{item.exercise}</Text>
                         <View style={styles.iconRow}>
                           <TouchableOpacity 
                             onPress={() => handleEdit(item)} 
