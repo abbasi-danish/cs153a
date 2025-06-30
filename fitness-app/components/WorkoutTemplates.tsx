@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Alert,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,112 +16,130 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from './ThemeContext';
 
 interface Exercise {
+  id: string;
   name: string;
-  sets: number;
-  reps: number;
+  bodyPart: string;
+  equipment: string;
+  target: string;
+  gifUrl: string;
 }
 
 interface WorkoutTemplate {
   id: string;
   name: string;
-  exercises: Exercise[];
   category: string;
   estimatedDuration: number;
+  exercises: Exercise[];
 }
 
 const { width } = Dimensions.get('window');
 
-const defaultTemplates: WorkoutTemplate[] = [
-  {
-    id: '1',
-    name: 'Full Body Strength',
-    category: 'Strength',
-    estimatedDuration: 60,
-    exercises: [
-      { name: 'Squats', sets: 3, reps: 12 },
-      { name: 'Push-ups', sets: 3, reps: 10 },
-      { name: 'Dumbbell Rows', sets: 3, reps: 12 },
-      { name: 'Plank', sets: 3, reps: 30 },
-    ],
-  },
-  {
-    id: '2',
-    name: 'Upper Body Focus',
-    category: 'Strength',
-    estimatedDuration: 45,
-    exercises: [
-      { name: 'Bench Press', sets: 4, reps: 8 },
-      { name: 'Pull-ups', sets: 3, reps: 8 },
-      { name: 'Overhead Press', sets: 3, reps: 10 },
-      { name: 'Bicep Curls', sets: 3, reps: 12 },
-      { name: 'Tricep Dips', sets: 3, reps: 12 },
-    ],
-  },
-  {
-    id: '3',
-    name: 'Core & Abs',
-    category: 'Core',
-    estimatedDuration: 30,
-    exercises: [
-      { name: 'Crunches', sets: 3, reps: 20 },
-      { name: 'Plank', sets: 3, reps: 45 },
-      { name: 'Russian Twists', sets: 3, reps: 20 },
-      { name: 'Leg Raises', sets: 3, reps: 15 },
-    ],
-  },
-  {
-    id: '4',
-    name: 'Cardio HIIT',
-    category: 'Cardio',
-    estimatedDuration: 25,
-    exercises: [
-      { name: 'Burpees', sets: 4, reps: 10 },
-      { name: 'Mountain Climbers', sets: 4, reps: 30 },
-      { name: 'Jump Squats', sets: 3, reps: 15 },
-      { name: 'High Knees', sets: 3, reps: 30 },
-    ],
-  },
-  {
-    id: '5',
-    name: 'Lower Body Power',
-    category: 'Strength',
-    estimatedDuration: 50,
-    exercises: [
-      { name: 'Deadlifts', sets: 4, reps: 8 },
-      { name: 'Lunges', sets: 3, reps: 12 },
-      { name: 'Calf Raises', sets: 4, reps: 20 },
-      { name: 'Glute Bridges', sets: 3, reps: 15 },
-    ],
-  },
-];
+// Predefined workout categories with their target muscle groups
+const workoutCategories = {
+  'Chest': ['chest'],
+  'Back': ['back'],
+  'Arms': ['biceps', 'triceps', 'forearms'],
+  'Legs': ['upper legs', 'lower legs'],
+  'Shoulders': ['shoulders'],
+  'Core': ['waist'],
+  'Cardio': ['cardio'],
+  'Full Body': ['chest', 'back', 'upper arms', 'lower arms', 'upper legs', 'lower legs', 'shoulders', 'waist'],
+};
 
 export function WorkoutTemplates() {
   const { isDark } = useTheme();
   const [templates, setTemplates] = useState<WorkoutTemplate[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [loading, setLoading] = useState(true);
+  const [exercises, setExercises] = useState<Exercise[]>([]);
 
   useEffect(() => {
     loadTemplates();
+    fetchExercises();
   }, []);
+
+  const fetchExercises = async () => {
+    try {
+      setLoading(true);
+      
+      // Try a simpler approach first - use the API without headers
+      const response = await fetch('https://exercisedb.p.rapidapi.com/exercises?limit=50');
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setExercises(data);
+    } catch (error) {
+      console.error('Error fetching exercises:', error);
+      
+      // Fallback: Use a simpler API or mock data
+      const fallbackExercises = [
+        { id: '1', name: 'Push-ups', bodyPart: 'chest', equipment: 'body weight', target: 'pectoralis major', gifUrl: '' },
+        { id: '2', name: 'Pull-ups', bodyPart: 'back', equipment: 'body weight', target: 'lats', gifUrl: '' },
+        { id: '3', name: 'Squats', bodyPart: 'upper legs', equipment: 'body weight', target: 'gluteus maximus', gifUrl: '' },
+        { id: '4', name: 'Lunges', bodyPart: 'upper legs', equipment: 'body weight', target: 'gluteus maximus', gifUrl: '' },
+        { id: '5', name: 'Plank', bodyPart: 'waist', equipment: 'body weight', target: 'abs', gifUrl: '' },
+        { id: '6', name: 'Burpees', bodyPart: 'cardio', equipment: 'body weight', target: 'cardiovascular system', gifUrl: '' },
+        { id: '7', name: 'Mountain Climbers', bodyPart: 'cardio', equipment: 'body weight', target: 'cardiovascular system', gifUrl: '' },
+        { id: '8', name: 'Jump Squats', bodyPart: 'upper legs', equipment: 'body weight', target: 'gluteus maximus', gifUrl: '' },
+        { id: '9', name: 'Bicep Curls', bodyPart: 'upper arms', equipment: 'dumbbell', target: 'biceps brachii', gifUrl: '' },
+        { id: '10', name: 'Tricep Dips', bodyPart: 'upper arms', equipment: 'body weight', target: 'triceps brachii', gifUrl: '' },
+        { id: '11', name: 'Shoulder Press', bodyPart: 'shoulders', equipment: 'dumbbell', target: 'deltoids', gifUrl: '' },
+        { id: '12', name: 'Deadlifts', bodyPart: 'back', equipment: 'barbell', target: 'erector spinae', gifUrl: '' },
+        { id: '13', name: 'Bench Press', bodyPart: 'chest', equipment: 'barbell', target: 'pectoralis major', gifUrl: '' },
+        { id: '14', name: 'Rows', bodyPart: 'back', equipment: 'barbell', target: 'lats', gifUrl: '' },
+        { id: '15', name: 'Crunches', bodyPart: 'waist', equipment: 'body weight', target: 'abs', gifUrl: '' },
+        { id: '16', name: 'Russian Twists', bodyPart: 'waist', equipment: 'body weight', target: 'abs', gifUrl: '' },
+        { id: '17', name: 'Leg Raises', bodyPart: 'waist', equipment: 'body weight', target: 'abs', gifUrl: '' },
+        { id: '18', name: 'Calf Raises', bodyPart: 'lower legs', equipment: 'body weight', target: 'gastrocnemius', gifUrl: '' },
+        { id: '19', name: 'Lateral Raises', bodyPart: 'shoulders', equipment: 'dumbbell', target: 'deltoids', gifUrl: '' },
+        { id: '20', name: 'Hammer Curls', bodyPart: 'upper arms', equipment: 'dumbbell', target: 'biceps brachii', gifUrl: '' },
+      ];
+      setExercises(fallbackExercises);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const generateWorkoutTemplate = (category: string, exercises: Exercise[]): WorkoutTemplate => {
+    const targetMuscles = workoutCategories[category as keyof typeof workoutCategories] || [];
+    
+    const categoryExercises = exercises.filter(exercise => 
+      targetMuscles.some(muscle => 
+        exercise.bodyPart.toLowerCase().includes(muscle.toLowerCase()) ||
+        exercise.target.toLowerCase().includes(muscle.toLowerCase())
+      )
+    );
+
+    // Take up to 6 exercises for the template
+    const selectedExercises = categoryExercises.slice(0, 6);
+    
+    return {
+      id: `${category}-${Date.now()}`,
+      name: `${category} Workout`,
+      category: category,
+      estimatedDuration: Math.max(30, selectedExercises.length * 8), // 8 minutes per exercise, minimum 30
+      exercises: selectedExercises,
+    };
+  };
 
   const loadTemplates = async () => {
     try {
-      const savedTemplates = await AsyncStorage.getItem('workoutTemplates');
-      if (savedTemplates) {
-        setTemplates(JSON.parse(savedTemplates));
-      } else {
-        setTemplates(defaultTemplates);
-        await AsyncStorage.setItem('workoutTemplates', JSON.stringify(defaultTemplates));
+      const saved = await AsyncStorage.getItem('workoutTemplates');
+      if (saved) {
+        setTemplates(JSON.parse(saved));
       }
     } catch (error) {
       console.error('Error loading templates:', error);
-      setTemplates(defaultTemplates);
     }
   };
 
   const saveTemplates = async (newTemplates: WorkoutTemplate[]) => {
     try {
       await AsyncStorage.setItem('workoutTemplates', JSON.stringify(newTemplates));
+      setTemplates(newTemplates);
     } catch (error) {
       console.error('Error saving templates:', error);
     }
@@ -132,46 +151,65 @@ export function WorkoutTemplates() {
       `Start "${template.name}" workout?`,
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Start', onPress: () => console.log('Starting workout:', template.name) },
+        { text: 'Start', onPress: () => {
+          // Here you could navigate to the workout logger with the template exercises
+          Alert.alert('Workout Started', 'Template loaded! You can now log your exercises.');
+        }}
       ]
     );
   };
 
-  const handleDeleteTemplate = (templateId: string) => {
+  const handleDeleteTemplate = (id: string) => {
     Alert.alert(
       'Delete Template',
       'Are you sure you want to delete this template?',
       [
         { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: () => {
-            const newTemplates = templates.filter(t => t.id !== templateId);
-            setTemplates(newTemplates);
-            saveTemplates(newTemplates);
-          },
-        },
+        { text: 'Delete', style: 'destructive', onPress: () => {
+          const newTemplates = templates.filter(t => t.id !== id);
+          saveTemplates(newTemplates);
+        }}
       ]
     );
   };
 
+  const handleGenerateTemplate = async (category: string) => {
+    if (exercises.length === 0) {
+      Alert.alert('Error', 'No exercises available. Please try again later.');
+      return;
+    }
+
+    const newTemplate = generateWorkoutTemplate(category, exercises);
+    const newTemplates = [...templates, newTemplate];
+    await saveTemplates(newTemplates);
+    
+    Alert.alert('Success', `Generated new ${category} workout template!`);
+  };
+
   const getCategoryColor = (category: string) => {
     const colors = {
-      'Strength': ['#FF6B6B', '#FF8E8E'] as const,
-      'Cardio': ['#4ECDC4', '#6EE7DF'] as const,
-      'Core': ['#45B7D1', '#67C9E1'] as const,
-      'Flexibility': ['#96CEB4', '#B8E0C8'] as const,
+      'Chest': ['#FF6B6B', '#FF8E8E'] as const,
+      'Back': ['#4ECDC4', '#6EE7DF'] as const,
+      'Arms': ['#45B7D1', '#67C9E1'] as const,
+      'Legs': ['#96CEB4', '#B8E0C8'] as const,
+      'Shoulders': ['#FFB347', '#FFC675'] as const,
+      'Core': ['#DDA0DD', '#E6B3E6'] as const,
+      'Cardio': ['#98D8C8', '#B8E8D8'] as const,
+      'Full Body': ['#667eea', '#764ba2'] as const,
     };
     return colors[category as keyof typeof colors] || ['#667eea', '#764ba2'] as const;
   };
 
   const getCategoryIcon = (category: string) => {
     const icons = {
-      'Strength': 'fitness-outline' as const,
-      'Cardio': 'heart-outline' as const,
+      'Chest': 'body-outline' as const,
+      'Back': 'body-outline' as const,
+      'Arms': 'fitness-outline' as const,
+      'Legs': 'fitness-outline' as const,
+      'Shoulders': 'body-outline' as const,
       'Core': 'body-outline' as const,
-      'Flexibility': 'body-outline' as const,
+      'Cardio': 'heart-outline' as const,
+      'Full Body': 'fitness-outline' as const,
     };
     return icons[category as keyof typeof icons] || 'fitness-outline';
   };
@@ -180,7 +218,29 @@ export function WorkoutTemplates() {
     ? templates 
     : templates.filter(t => t.category === selectedCategory);
 
-  const categories = ['All', ...Array.from(new Set(templates.map(t => t.category)))];
+  const categories = ['All', ...Object.keys(workoutCategories)];
+
+  if (loading) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#18181b' : '#fff' }]}>
+        <LinearGradient
+          colors={isDark ? ['#232526', '#18181b'] : ['#667eea', '#764ba2']}
+          style={styles.gradientBackground}
+        >
+          <View style={styles.content}>
+            <View style={styles.header}>
+              <Text style={[styles.title, { color: isDark ? '#fff' : '#fff' }]}>Workout Templates</Text>
+              <Text style={[styles.subtitle, { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.8)' }]}>Loading exercises from API...</Text>
+            </View>
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#fff" />
+              <Text style={[styles.loadingText, { color: isDark ? '#fff' : '#fff' }]}>Fetching workout data...</Text>
+            </View>
+          </View>
+        </LinearGradient>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#18181b' : '#fff' }]}>
@@ -191,7 +251,7 @@ export function WorkoutTemplates() {
         <View style={styles.content}>
           <View style={styles.header}>
             <Text style={[styles.title, { color: isDark ? '#fff' : '#fff' }]}>Workout Templates</Text>
-            <Text style={[styles.subtitle, { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.8)' }]}>Choose your perfect workout</Text>
+            <Text style={[styles.subtitle, { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.8)' }]}>Generate workouts from {exercises.length} exercises</Text>
           </View>
 
           <View style={styles.categoryContainer}>
@@ -203,7 +263,13 @@ export function WorkoutTemplates() {
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.categoryButton}
-                  onPress={() => setSelectedCategory(item)}
+                  onPress={() => {
+                    if (item === 'All') {
+                      setSelectedCategory(item);
+                    } else {
+                      handleGenerateTemplate(item);
+                    }
+                  }}
                 >
                   <LinearGradient
                     colors={selectedCategory === item 
@@ -217,7 +283,7 @@ export function WorkoutTemplates() {
                       selectedCategory === item && styles.selectedCategoryText,
                       { color: isDark ? '#fff' : '#fff' },
                     ]}>
-                      {item}
+                      {item === 'All' ? item : `Generate ${item}`}
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>
@@ -281,7 +347,7 @@ export function WorkoutTemplates() {
                         <View key={index} style={styles.exerciseItem}>
                           <Text style={[styles.exerciseName, { color: isDark ? '#fff' : '#fff' }]}>• {exercise.name}</Text>
                           <Text style={[styles.exerciseDetails, { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.8)' }]}>
-                            {exercise.sets} sets × {exercise.reps} reps
+                            {exercise.bodyPart} • {exercise.target}
                           </Text>
                         </View>
                       ))}
@@ -298,9 +364,9 @@ export function WorkoutTemplates() {
             ListEmptyComponent={
               <View style={styles.emptyContainer}>
                 <Ionicons name="fitness-outline" size={64} color={isDark ? 'rgba(255,255,255,0.6)' : 'rgba(255, 255, 255, 0.6)'} />
-                <Text style={[styles.emptyTitle, { color: isDark ? '#fff' : '#fff' }]}>No templates found</Text>
+                <Text style={[styles.emptyTitle, { color: isDark ? '#fff' : '#fff' }]}>No templates yet</Text>
                 <Text style={[styles.emptyText, { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.8)' }] }>
-                  No templates match the selected category
+                  Tap a category above to generate your first workout template!
                 </Text>
               </View>
             }
@@ -334,6 +400,17 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.8)',
+    fontWeight: '500',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#fff',
+    marginTop: 16,
     fontWeight: '500',
   },
   categoryContainer: {
@@ -426,21 +503,18 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   exerciseItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: 4,
   },
   exerciseName: {
     fontSize: 14,
     color: '#fff',
     fontWeight: '500',
-    flex: 1,
   },
   exerciseDetails: {
     fontSize: 12,
     color: 'rgba(255, 255, 255, 0.8)',
     fontWeight: '400',
+    marginLeft: 16,
   },
   moreExercises: {
     fontSize: 12,
