@@ -40,6 +40,19 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
+            title: 'Home',
+            tabBarIcon: ({ color, size, focused }) => (
+              <Ionicons 
+                name={focused ? 'home' : 'home-outline'} 
+                size={size} 
+                color={color} 
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="workout-logger"
+          options={{
             title: 'Workout Logger',
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons 
